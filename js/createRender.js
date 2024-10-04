@@ -208,6 +208,6 @@ export const createRender = (
       const child = cubes.children[i];
       child.material = getXYZ(child.rpos.x, child.rpos.y, child.rpos.z) == 0 ? materials.idle : materials.active;
     }
-    map[player.x][player.y][player.z].material = getXYZ(player.x, player.y, player.z) == 0 ? materials.idle : materials.active;
+    map[player.x][player.y][player.z].material = getXYZ(player.x, player.y, player.z) == 0 ? materials.playerIdle : materials.playerActive;
   }
 }
