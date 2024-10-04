@@ -25,7 +25,11 @@ const generateMap = (bitMap, g16) => {
 
 const SIZE = 3;
 
-const bitMap = new BitMap(0, SIZE);
+const localMap = localStorage.getItem("save") == null ? NaN : Number(localStorage.getItem("save"));
+const bitMap = new BitMap(
+  Number.isSafeInteger(localMap) ? localMap : 0,
+  SIZE
+);
 const g16 = new Gyver16();
 const osetMap = new BitMapOffset(
   bitMap,
@@ -44,10 +48,6 @@ const osetMap = new BitMapOffset(
     { name: "route6", size: 1 }
   ]
 );
-osetMap.setField("y", 1n);
-osetMap.setField("x", 1n);
-osetMap.setField("z", 1n);
-osetMap.setField("seed", ~~(Math.random() * 0xffff));
 const storyRoute = {
   get all() {
     return [
@@ -71,12 +71,19 @@ const storyRoute = {
     return this.all;
   }
 }
+if (!Number.isSafeInteger(localMap)) {
+  osetMap.setField("y", 1n);
+  osetMap.setField("x", 1n);
+  osetMap.setField("z", 1n);
+  osetMap.setField("seed", ~~(Math.random() * 0xffff));
+}
 
 g16.seed = osetMap.getField("seed");
 
-generateMap(bitMap, g16);
-osetMap.setField("seed", g16.seed);
-
+if (!Number.isSafeInteger(localMap)) {
+  generateMap(bitMap, g16);
+  osetMap.setField("seed", g16.seed);
+}
 // The Shitty Bridge to transfer data beetwen gui and render
 let trickyUpdate = () => { }
 
@@ -86,6 +93,7 @@ const cgui = createGUI(
     bitMap.save = n;
     g16.seed = osetMap.getField("seed");
 
+    localStorage.setItem("save", bitMap.save.toString());
     cgui.updateSave(n);
     cgui.updateSolved(osetMap.getField("solved"));
 
@@ -93,13 +101,16 @@ const cgui = createGUI(
   }
 );
 
-const story = createStory(cgui.gui);
+const story = createStory(cgui.mainGui);
 const storyCallback = (route) => {
   storyRoute.all = route;
+  localStorage.setItem("save", bitMap.save.toString());
   cgui.updateSave(bitMap.save);
 }
 story(osetMap.getField("solved"), storyRoute.all, storyCallback);
+localStorage.setItem("save", bitMap.save.toString());
 cgui.updateSave(bitMap.save);
+cgui.updateSolved(osetMap.getField("solved"));
 
 let render = createRender(
   document.getElementsByTagName("canvas")[0],
@@ -148,6 +159,7 @@ let render = createRender(
       story(solved, storyRoute.all, storyCallback);
     }
 
+    localStorage.setItem("save", bitMap.save.toString());
     cgui.updateSave(bitMap.save);
 
     return true;
@@ -162,40 +174,7 @@ trickyUpdate = () => {
     osetMap.getField("y"),
     osetMap.getField("z")
   );
+  localStorage.setItem("save", bitMap.save.toString());
   cgui.updateSave(bitMap.save);
 }
 
-/** @param {string} v */
-const rpcParse = v => {
-  v = v.trim().toLowerCase();
-  switch (v) {
-    case "rock": v = 0; break;
-    case "paper": v = 1; break;
-    case "scissors": v = 2; break;
-  }
-  return v;
-}
-const rpc = (p1, p2) => {
-  p1 = rpcParse(p1);
-  p2 = rpcParse(p2);
-
-  if (p1 == p2) return 0;
-  if (p1 == 1) return Number(p1 < p2) + 1;
-  if (p2 == 1) return Number(p2 > p1) + 1;
-  if (Math.abs(p1 - p2) == 2) return Number(p1 > p2) + 1;
-}
-
-console.log(rpc("rock", "rock"));
-console.log(rpc("rock", "paper"));
-console.log(rpc("rock", "scissors"));
-
-console.log(rpc("paper", "rock"));
-console.log(rpc("paper", "paper"));
-console.log(rpc("paper", "scissors"));
-
-console.log(rpc("scissors", "rock"));
-console.log(rpc("scissors", "paper"));
-console.log(rpc("scissors", "scissors"));
-
-
-console.log(rpc(" RoCk    ", "    Paper  "));
