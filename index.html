@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <title>Game x64 Save</title>
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+  <canvas></canvas>
+  <div class="overlay overlay-hidden">This div is over the canvas</div>
+  <script type="importmap">
+    {
+      "imports": {
+        "t3d": "./js/t3d/t3d.module.js",
+        "t3d/addons": "./js/t3d/addons"
+      }
+    }
+  </script>
+  <script type="module" src="js/index.js"></script>
+</body>
+
+</html>
