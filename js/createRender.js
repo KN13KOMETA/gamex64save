@@ -3,6 +3,7 @@ import * as t3d from "./t3d/t3d.module.js"
 import { OrbitControls } from "./t3d/addons/controls/OrbitControls.js"
 import { ForwardRenderer } from "./t3d/addons/render/ForwardRenderer.js"
 import { Raycaster } from "./t3d/addons/Raycaster.js"
+import { playAudio } from "./playAudio.js"
 
 /**
  * @param {HTMLCanvasElement} canvas
@@ -17,6 +18,7 @@ export const createRender = (
   mapSize,
   playerInitPos = { x: 0, y: 0, z: 0 },
   getXYZ = () => 0,
+  canMovePlayer = () => true,
   tryNewPlayerPos = () => true
 ) => {
   const upscale = 20;
@@ -145,6 +147,7 @@ export const createRender = (
       const array = raycaster.intersectObject(scene, true);
       if (array.length == 0) return;
       const object = array[0].object;
+      if (!canMovePlayer(object.rpos)) return;
       object.selected = true;
       object.material = materials.hover;
     });
@@ -154,6 +157,7 @@ export const createRender = (
       if (index == -1) return;
       const cube = cubes.children[index];
       if (!tryNewPlayerPos(cube.rpos)) return;
+      playAudio("../sound/475188__sheyvan__button-clicking-1.wav", 0.25)
       for (let i = 0; i < cubes.children.length; i++) {
         const child = cubes.children[i];
         child.material = getXYZ(child.rpos.x, child.rpos.y, child.rpos.z) == 0 ? materials.idle : materials.active;

@@ -1,0 +1,5 @@
+If you doesn't want to spoil a story for you.
+DO NOT open next files and directories:
+story.canvas
+js/createStory.js
+sound/

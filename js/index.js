@@ -25,9 +25,16 @@ const generateMap = (bitMap, g16) => {
 
 const SIZE = 3;
 
-const localMap = localStorage.getItem("save") == null ? NaN : Number(localStorage.getItem("save"));
+const localMap = (() => {
+  if (localStorage.getItem("save") == null) return null;
+  try {
+    return BigInt(localStorage.getItem("save"));
+  } catch (e) {
+    return null;
+  }
+})();
 const bitMap = new BitMap(
-  Number.isSafeInteger(localMap) ? localMap : 0,
+  localMap !== null ? localMap : 0,
   SIZE
 );
 const g16 = new Gyver16();
@@ -128,6 +135,14 @@ let render = createRender(
     z: osetMap.getField("z"),
   },
   (x, y, z) => bitMap.getValue(x, y, z),
+  (pos) => canMove(
+    {
+      x: osetMap.getField("x"),
+      y: osetMap.getField("y"),
+      z: osetMap.getField("z"),
+    },
+    pos
+  ),
   (pos) => {
     if (!canMove(
       {

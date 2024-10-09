@@ -5,7 +5,6 @@ export const createGUI = (setNewSaveNumber = (n) => { }) => {
   gui.title("Game");
   const folder = gui.addFolder("Data");
 
-
   const dumbnessSafe = () => {
     const test = (~~(Math.random() * 9999)).toString().padStart(4, 0);
     if (test != prompt(`Are you sure? If yes type "${test}"`)) return true;
