@@ -6,6 +6,6 @@
 <details>
 <summary>SPOILER ALERT</summary>
 
-[Wooden Door Knock](https://freesound.org//people/FrostyFrost/sounds/348371/)
+[Wooden Door Knock](https://freesound.org/people/FrostyFrost/sounds/348371/)
 
 </details>
